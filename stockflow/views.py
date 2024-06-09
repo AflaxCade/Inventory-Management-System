@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
 from .forms import CreateUserForm
+from .models import Customer
 
 # Create your views here.
 
@@ -51,3 +52,10 @@ def logoutUser(request):
 @login_required(login_url='login')
 def home(request):
     return render(request, 'dashboard.html', {})
+
+def customer(request):
+
+    customers = Customer.objects.all()
+    context = {'customers': customers}
+
+    return render(request, 'customer.html', context)
