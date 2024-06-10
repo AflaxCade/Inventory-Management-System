@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm
+from .forms import CreateUserForm, CustomerForm
 from .models import Customer
 
 # Create your views here.
@@ -53,9 +53,26 @@ def logoutUser(request):
 def home(request):
     return render(request, 'dashboard.html', {})
 
+@login_required(login_url='login')
 def customer(request):
 
     customers = Customer.objects.all()
     context = {'customers': customers}
 
     return render(request, 'customer.html', context)
+
+@login_required(login_url='login')
+def profile(request):
+    customer = request.user.customer
+    group = None
+    if request.user.groups.exists():
+        group = request.user.groups.all()[0].name
+    form = CustomerForm(instance=customer)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, request.FILES, instance=customer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated successfully')
+    
+    context = {'form': form, 'group': group}
+    return render(request, 'profile.html', context)
