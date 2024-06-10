@@ -1,4 +1,5 @@
 from django import forms
+from .models import Customer
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -17,3 +18,16 @@ class CreateUserForm(UserCreationForm):
         self.fields['email'].widget.attrs.update({'placeholder': 'Email', 'class': 'form-control'})
         self.fields['password1'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password', 'class': 'form-control'})
+
+
+class CustomerForm(forms.ModelForm):
+    class Meta:
+        model = Customer
+        fields = '__all__'
+        exclude = ['user']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control '}),
+            'phone': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'profile_pic': forms.FileInput(attrs={'class': 'form-control'}),
+        }
