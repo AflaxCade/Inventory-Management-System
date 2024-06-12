@@ -95,5 +95,5 @@ def deleteSupplier(request, pk):
         supplier.delete()
         messages.success(request, f'{supplier.name} deleted successfully.')
     except ObjectDoesNotExist:
-        messages.danger(request, 'Supplier does not exist.')
+        messages.error(request, 'Supplier does not exist.')
     return redirect('supplier')
