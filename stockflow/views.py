@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
 from .forms import CreateUserForm, CustomerForm
-from .models import Customer
+from .models import Customer, Supplier
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 
@@ -53,13 +54,6 @@ def logoutUser(request):
 def home(request):
     return render(request, 'dashboard.html', {})
 
-@login_required(login_url='login')
-def customer(request):
-
-    customers = Customer.objects.all()
-    context = {'customers': customers}
-
-    return render(request, 'customer.html', context)
 
 @login_required(login_url='login')
 def profile(request):
@@ -76,3 +70,30 @@ def profile(request):
     
     context = {'form': form, 'group': group}
     return render(request, 'profile.html', context)
+
+
+@login_required(login_url='login')
+def customer(request):
+
+    customers = Customer.objects.all()
+    context = {'customers': customers}
+
+    return render(request, 'customer.html', context)
+
+
+@login_required(login_url='login')
+def supplier(request):
+    suppliers = Supplier.objects.all()
+    context = {'suppliers': suppliers}
+    return render(request, 'supplier.html', context)
+
+
+@login_required(login_url='login')
+def deleteSupplier(request, pk):
+    try:
+        supplier = Supplier.objects.get(id=pk)
+        supplier.delete()
+        messages.success(request, f'{supplier.name} deleted successfully.')
+    except ObjectDoesNotExist:
+        messages.danger(request, 'Supplier does not exist.')
+    return redirect('supplier')
