@@ -16,7 +16,7 @@ class Customer(models.Model):
 
 class Supplier(models.Model):
 	name = models.CharField(max_length=200)
-	contac = models.CharField(max_length=200, blank=True, null=True)
+	contact = models.CharField(max_length=200, blank=True, null=True)
 	email = models.EmailField(unique=True)
 	phone = models.CharField(max_length=30, blank=True, null=True)
 	address = models.TextField(blank=True, null=True)
