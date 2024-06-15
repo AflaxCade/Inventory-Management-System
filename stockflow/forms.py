@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer
+from .models import Customer, Supplier
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -30,4 +30,16 @@ class CustomerForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'profile_pic': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+class SupplierForm(forms.ModelForm):
+    class Meta:
+        model = Supplier
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Supllier Name', 'required': True}),
+            'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Contact Name', 'required': True}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone', 'required': True}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'required': True}),
+            'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'required': True}),
         }
