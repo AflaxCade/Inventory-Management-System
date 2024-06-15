@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 
 # Create your models here.
 
@@ -18,7 +19,18 @@ class Supplier(models.Model):
 	name = models.CharField(max_length=200)
 	contact = models.CharField(max_length=200, blank=True, null=True)
 	email = models.EmailField(unique=True)
-	phone = models.CharField(max_length=30, blank=True, null=True)
+	phone = models.CharField(
+		max_length=30,
+		blank=True,
+		null=True,
+		validators=[
+			RegexValidator(
+				regex='^[0-9+\-]+$',  # Allows digits, plus, and minus symbols
+				message='Phone number must be numeric and can include +, - symbols',
+				code='invalid_phone_number'
+			),
+		]
+	)
 	address = models.TextField(blank=True, null=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
