@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm, CustomerForm
+from .forms import CreateUserForm, CustomerForm, SupplierForm
 from .models import Customer, Supplier
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -84,9 +84,23 @@ def customer(request):
 @login_required(login_url='login')
 def supplier(request):
     suppliers = Supplier.objects.all()
-    context = {'suppliers': suppliers}
+    form = SupplierForm()
+    context = {'suppliers': suppliers, 'form': form}
     return render(request, 'supplier.html', context)
 
+
+@login_required(login_url='login')
+def createSupplier(request):
+    if request.method == 'POST':
+        form = SupplierForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Supplier created successfully')
+            return redirect('supplier')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    return redirect('supplier')
 
 @login_required(login_url='login')
 def deleteSupplier(request, pk):
