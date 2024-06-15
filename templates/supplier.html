@@ -11,6 +11,62 @@
         </ol>
     </div>
 
+    <!-- Add Supplier Modal -->
+    <div class="modal fade" id="modal-add-supplier" tabindex="-1" role="dialog" aria-labelledby="modal-add-supplierLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-scrollable" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="modal-add-supplierLabel">Add New Supplier</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form action="{% url 'create_supplier'%}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Name</label>
+                        <div class="col-sm-9">
+                            {{ form.name}}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Contact</label>
+                        <div class="col-sm-9">
+                            {{ form.contact }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Email</label>
+                        <div class="col-sm-9">
+                            {{ form.email }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Phone</label>
+                        <div class="col-sm-9">
+                            {{ form.phone }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Address</label>
+                        <div class="col-sm-9">
+                            {{ form.address }}
+                        </div>
+                    </div>                  
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+                </div>
+              </div>
+            </div>
+          </div>
+    <!-- end Supplier Modal -->
+    
+
     <div>
         {% if messages %}
         {% for message in messages %}
@@ -79,7 +135,7 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabelLogout">Deleting Supplier
+                                            <h5 class="modal-title" id="modal-delete-{{ supplier.id }}">Deleting Supplier
                                                 "{{supplier.name}}"!</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
