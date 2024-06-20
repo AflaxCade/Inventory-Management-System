@@ -23,7 +23,7 @@ def registerPage(request):
             error_message = form.errors.as_text()
             messages.error(request, f'{error_message}')
     context = {'form': form}
-    return render(request, 'registration/register.html', context)
+    return render(request, 'account/register.html', context)
 
 @unauthenticated_user
 def loginPage(request):
@@ -42,7 +42,7 @@ def loginPage(request):
         else:
             messages.info(request, 'Username OR password is incorrect')
     context = {}
-    return render(request, 'registration/login.html', context)
+    return render(request, 'account/login.html', context)
 
 
 def logoutUser(request):
@@ -69,7 +69,7 @@ def profile(request):
             messages.success(request, 'Profile updated successfully')
     
     context = {'form': form, 'group': group}
-    return render(request, 'profile.html', context)
+    return render(request, 'account/profile.html', context)
 
 
 @login_required(login_url='login')
