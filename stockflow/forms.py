@@ -1,6 +1,7 @@
 from django import forms
 from .models import Customer, Supplier
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import PasswordResetForm , SetPasswordForm
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -43,3 +44,16 @@ class SupplierForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'required': True}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'required': True}),
         }
+
+class CustomPasswordResetForm(PasswordResetForm):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'})
+    )
+
+class CustomSetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'})
+    )
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'})
+    )
