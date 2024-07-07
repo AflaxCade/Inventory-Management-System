@@ -1,7 +1,7 @@
 from django import forms
 from .models import Customer, Supplier
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordResetForm , SetPasswordForm
+from django.contrib.auth.forms import PasswordResetForm , SetPasswordForm, PasswordChangeForm
 from django.contrib.auth.forms import UserCreationForm
 
 
@@ -52,8 +52,15 @@ class CustomPasswordResetForm(PasswordResetForm):
 
 class CustomSetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'})
-    )
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}))
     new_password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'})
-    )
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}))
+    
+
+class CustomPasswordChangeForm(PasswordChangeForm):
+    old_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Old password'}))
+    new_password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}))
+    new_password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}))
