@@ -41,48 +41,6 @@
     box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
 }
 
-.btn-twitter {
-    color: #fff;
-    background-color: #1DA1F2;
-    border-color: #fff;
-    -webkit-box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2) !important;
-    box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2) !important;
-    border-radius: .25rem;
-}
-
-.btn-twitter:hover {
-    color: #fff;
-    background-color: #0d95e8;
-    border-color: #e6e6e6;
-}
-
-.btn-twitter:focus,
-.btn-twitter.focus {
-    -webkit-box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
-    box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
-}
-
-.btn-twitter:disabled,
-.btn-twitter.disabled {
-    color: #fff;
-    background-color: #1DA1F2;
-    border-color: #fff;
-}
-
-.btn-twitter:not(:disabled):not(.disabled).active,
-.btn-twitter:not(:disabled):not(.disabled):active,
-.show>.btn-twitter.dropdown-toggle {
-    color: #fff;
-    background-color: #0d95e8;
-    border-color: #dfdfdf;
-}
-
-.btn-twitter:not(:disabled):not(.disabled).active:focus,
-.btn-twitter:not(:disabled):not(.disabled):active:focus,
-.show>.btn-twitter.dropdown-toggle:focus {
-    -webkit-box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
-    box-shadow: 0 0 0 .2rem rgba(255, 255, 255, .5);
-}
 
 .btn-github {
     color: #fff;
