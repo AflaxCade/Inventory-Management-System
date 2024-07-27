@@ -1,14 +1,18 @@
 from django import forms
 from .models import Customer, Supplier
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import PasswordResetForm , SetPasswordForm, PasswordChangeForm
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm, PasswordChangeForm, UserCreationForm
 
 
 class CreateUserForm(UserCreationForm):
-    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={
-        'placeholder': 'Email',
-        'class': 'form-control'}))
+    """
+    Form for creating a new user with email validation.
+    """
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={'placeholder': 'Email', 'class': 'form-control'})
+    )
+
     class Meta:
         model = User
         fields = ['username', 'email', 'password1', 'password2']
@@ -28,14 +32,17 @@ class CreateUserForm(UserCreationForm):
     
 
 class CustomerForm(forms.ModelForm):
+    """
+    Form for creating and updating Customer instances.
+    """
     class Meta:
         model = Customer
         fields = '__all__'
         exclude = ['user']
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control '}),
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control', 'required': True}),
             'profile_pic': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
@@ -45,35 +52,55 @@ class CustomerForm(forms.ModelForm):
         if qs.exists():
             raise forms.ValidationError('Email already in use.')
         return email
-    
+
+
 class SupplierForm(forms.ModelForm):
+    """
+    Form for creating and updating Supplier instances.
+    """
     class Meta:
         model = Supplier
         fields = '__all__'
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Supllier Name', 'required': True}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Supplier Name', 'required': True}),
             'contact': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Contact Name', 'required': True}),
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone', 'required': True}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'required': True}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'required': True}),
         }
 
+
 class CustomPasswordResetForm(PasswordResetForm):
+    """
+    Custom form for resetting password.
+    """
     email = forms.EmailField(
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Enter your email'})
     )
 
+
 class CustomSetPasswordForm(SetPasswordForm):
+    """
+    Custom form for setting a new password.
+    """
     new_password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'})
+    )
     new_password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}))
-    
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'})
+    )
+
 
 class CustomPasswordChangeForm(PasswordChangeForm):
+    """
+    Custom form for changing the password.
+    """
     old_password = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Old password'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Old password'})
+    )
     new_password1 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New password'})
+    )
     new_password2 = forms.CharField(
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm new password'})
+    )
