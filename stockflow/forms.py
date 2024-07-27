@@ -20,6 +20,12 @@ class CreateUserForm(UserCreationForm):
         self.fields['password1'].widget.attrs.update({'placeholder': 'Password', 'class': 'form-control'})
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password', 'class': 'form-control'})
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Email already in use.')
+        return email
+    
 
 class CustomerForm(forms.ModelForm):
     class Meta:
@@ -33,6 +39,13 @@ class CustomerForm(forms.ModelForm):
             'profile_pic': forms.FileInput(attrs={'class': 'form-control'}),
         }
 
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        qs = Customer.objects.exclude(id=self.instance.id).filter(email=email)
+        if qs.exists():
+            raise forms.ValidationError('Email already in use.')
+        return email
+    
 class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier

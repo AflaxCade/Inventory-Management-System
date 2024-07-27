@@ -67,6 +67,9 @@ def profile(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Profile updated successfully')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
     
     context = {'form': form, 'group': group}
     return render(request, 'account/profile.html', context)

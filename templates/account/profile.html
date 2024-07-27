@@ -42,12 +42,21 @@
 
                         {% if messages %}
                         {% for message in messages %}
-                        <div class="alert alert-dismissible alert-{{ message.tags }}" role="alert">
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-dismissible alert-danger" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                             {{ message }}
                         </div>
+                        {% else %}
+                        <div class="alert alert-dismissible alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ message }}
+                        </div>
+                        {% endif %}
                         {% endfor %}
                         {% endif %}
 
