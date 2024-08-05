@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %}StockFolw - Suppliers{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="container-wrapper">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Suppliers</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item">Suppliers</li>
+        </ol>
+    </div>
+
+    <!-- Add Supplier Modal -->
+
+    <!-- end Supplier Modal -->
+
+    <div class="row mb-3">
+        <div class="col-md-5">
+            <div class="card card-primary card-outline">
+                <div class="card-body">
+                    <h3 class="text-center mt-3">Supplier Info</h3>
+                    <ul class="list-group list-group-unbordered mt-4 mb-3">
+                        <li class="list-group-item">
+                            <b>Supplier ID</b> <a class="float-right">{{ supplier.id }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Supplier name</b> <a class="float-right">{{supplier.name}}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Contact name</b> <a class="float-right">{{ supplier.contact }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Email</b> <a class="float-right">{{supplier.email}}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Phone</b> <a class="float-right">{{supplier.phone}}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>joined</b> <a class="float-right">{{ supplier.created_at }}</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Updated</b> <a class="float-right">{{ supplier.updated_at }}</a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+            </div>
+        </div>
+        <!-- /.col -->
+        <div class="col-md-7">
+            <div class="card">
+                <div class="card-body">
+                    <div class="tab-content">
+
+                        {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-dismissible alert-danger" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ message }}
+                        </div>
+                        {% else %}
+                        <div class="alert alert-dismissible alert-success" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            {{ message }}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+
+
+                        <div class="">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        {{ form.name}}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Contact</label>
+                                    <div class="col-sm-9">
+                                        {{ form.contact }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Email</label>
+                                    <div class="col-sm-9">
+                                        {{ form.email }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Phone</label>
+                                    <div class="col-sm-9">
+                                        {{ form.phone }}
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3 col-form-label">Address</label>
+                                    <div class="col-sm-9">
+                                        {{ form.address }}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row">
+                                    
+                                    <div class="col-sm-9 offset-3">
+                                        <button type="submit" class="btn btn-primary btn-block">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!-- /.tab-pane -->
+                    </div>
+                    <!-- /.tab-content -->
+                </div><!-- /.card-body -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+    </div>
+
+</div>
+{% endblock %}
