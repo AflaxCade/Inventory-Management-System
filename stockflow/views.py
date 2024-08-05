@@ -105,6 +105,27 @@ def createSupplier(request):
             messages.error(request, f'{error_message}')
     return redirect('supplier')
 
+
+def updateSupplier(request, pk):
+    try:
+        supplier = Supplier.objects.get(id=pk)
+    except Supplier.DoesNotExist:
+        messages.error(request, 'Supplier does not exist.')
+        return redirect('supplier')
+    form = SupplierForm(instance=supplier)
+    if request.method == 'POST':
+        form = SupplierForm(request.POST, instance=supplier)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Supplier updated successfully')
+            return redirect('supplier')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    context = {'form': form, 'supplier': supplier}
+    return render(request, 'edit_supplier.html', context)
+
+
 @login_required(login_url='login')
 def deleteSupplier(request, pk):
     try:
