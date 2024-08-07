@@ -7,7 +7,7 @@
         <div class="sidebar-brand-text mx-3">StockFolw</div>
     </a>
     <hr class="sidebar-divider my-0">
-    <li class="nav-item active">
+    <li class="nav-item {% if request.path == '/' %}active{% endif %}">
         <a class="nav-link" href="/">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Dashboard</span></a>
