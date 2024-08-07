@@ -106,6 +106,7 @@ def createSupplier(request):
     return redirect('supplier')
 
 
+@login_required(login_url='login')
 def updateSupplier(request, pk):
     try:
         supplier = Supplier.objects.get(id=pk)
