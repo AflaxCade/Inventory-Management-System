@@ -43,3 +43,15 @@ class Supplier(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Category(models.Model):
+    """
+    Model to represent a Category.
+    """
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
