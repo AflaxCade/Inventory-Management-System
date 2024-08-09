@@ -30,8 +30,8 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {% if request.path == '/category/' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'category' %}">
             <i class="fas fa-clipboard-list"></i>
             <span>Categories</span>
         </a>
