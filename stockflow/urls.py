@@ -17,6 +17,8 @@ urlpatterns = [
     path('supplier/<str:pk>/', views.updateSupplier, name='update_supplier'),
     path('delete_supplier/<str:pk>/', views.deleteSupplier, name='delete_supplier'),
 
+    path('category/', views.category, name='category'),
+
 
     # reset password urls
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name="account/password_reset_form.html", form_class=CustomPasswordResetForm), name='password_reset'),
