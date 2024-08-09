@@ -144,3 +144,17 @@ def category(request):
     form = CategoryForm()
     context = {'categories': categories, 'form': form}
     return render(request, 'category.html', context)
+
+
+@login_required(login_url='login')
+def createCategory(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category created successfully')
+            return redirect('category')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    return redirect('category')
