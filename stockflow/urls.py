@@ -18,6 +18,7 @@ urlpatterns = [
     path('delete_supplier/<str:pk>/', views.deleteSupplier, name='delete_supplier'),
 
     path('category/', views.category, name='category'),
+    path('create_category/', views.createCategory, name='create_category'),
 
 
     # reset password urls
