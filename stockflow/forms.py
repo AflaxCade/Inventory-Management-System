@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Supplier
+from .models import Customer, Supplier, Category
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm, PasswordChangeForm, UserCreationForm
 
@@ -67,6 +67,19 @@ class SupplierForm(forms.ModelForm):
             'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Phone', 'required': True}),
             'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email', 'required': True}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Address', 'required': True}),
+        }
+
+
+class CategoryForm(forms.ModelForm):
+    """
+    Form for creating and updating Category instances.
+    """
+    class Meta:
+        model = Category
+        fields = '__all__'
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category Name', 'required': True}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'required': True}),
         }
 
 
