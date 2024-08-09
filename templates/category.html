@@ -23,7 +23,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form action="{% url 'create_supplier'%}" method="post">
+                  <form action="{% url 'create_category' %}" method="post">
                     {% csrf_token %}
                     <div class="form-group row">
                         <label class="col-sm-3 col-form-label">Name</label>
