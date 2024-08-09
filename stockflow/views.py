@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm, CustomerForm, SupplierForm
-from .models import Customer, Supplier
+from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm
+from .models import Customer, Supplier, Category
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -136,3 +136,11 @@ def deleteSupplier(request, pk):
     except ObjectDoesNotExist:
         messages.error(request, 'Supplier does not exist.')
     return redirect('supplier')
+
+
+@login_required(login_url='login')
+def category(request):
+    categories = Category.objects.all()
+    form = CategoryForm()
+    context = {'categories': categories, 'form': form}
+    return render(request, 'category.html', context)
