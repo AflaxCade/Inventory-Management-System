@@ -158,3 +158,14 @@ def createCategory(request):
             error_message = form.errors.as_text()
             messages.error(request, f'{error_message}')
     return redirect('category')
+
+
+@login_required(login_url='login')
+def deleteCategory(request, pk):
+    try:
+        category = Category.objects.get(id=pk)
+        category.delete()
+        messages.success(request, f'{category.name} deleted successfully.')
+    except ObjectDoesNotExist:
+        messages.error(request, 'Category does not exist.')
+    return redirect('category')
