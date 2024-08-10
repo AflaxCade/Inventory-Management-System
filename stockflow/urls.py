@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('category/', views.category, name='category'),
     path('create_category/', views.createCategory, name='create_category'),
+    path('delete_category/<str:pk>/', views.deleteCategory, name='delete_category'),
 
 
     # reset password urls
