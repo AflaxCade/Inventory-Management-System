@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
 from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm
-from .models import Customer, Supplier, Category
+from .models import Customer, Supplier, Category, Product
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -169,3 +169,11 @@ def deleteCategory(request, pk):
     except ObjectDoesNotExist:
         messages.error(request, 'Category does not exist.')
     return redirect('category')
+
+
+@login_required(login_url='login')
+def product(request):
+    products = Product.objects.all()
+    form = CategoryForm()
+    context = {'products': products, 'form': form}
+    return render(request, 'product.html', context)
