@@ -12,42 +12,42 @@
     </div>
 
     <!-- Add Category Modal -->
-    <div class="modal fade" id="modal-add-category" tabindex="-1" role="dialog" aria-labelledby="modal-add-categoryLabel"
-            aria-hidden="true">
-            <div class="modal-dialog modal-dialog-scrollable" role="document">
-              <div class="modal-content">
+    <div class="modal fade" id="modal-add-category" tabindex="-1" role="dialog"
+        aria-labelledby="modal-add-categoryLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable" role="document">
+            <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="modal-add-categoryLabel">Add New Category</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                    <h5 class="modal-title" id="modal-add-categoryLabel">Add New Category</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
-                  <form action="{% url 'create_category' %}" method="post">
-                    {% csrf_token %}
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Name</label>
-                        <div class="col-sm-9">
-                            {{ form.name}}
+                    <form action="{% url 'create_category' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Name</label>
+                            <div class="col-sm-9">
+                                {{ form.name}}
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">Description</label>
-                        <div class="col-sm-9">
-                            {{ form.description }}
+                        <div class="form-group row">
+                            <label class="col-sm-3 col-form-label">Description</label>
+                            <div class="col-sm-9">
+                                {{ form.description }}
+                            </div>
                         </div>
-                    </div>                  
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-primary">Create</button>
-                </form>
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    </form>
                 </div>
-              </div>
             </div>
-          </div>
+        </div>
+    </div>
     <!-- end Supplier Modal -->
-    
+
 
     <div>
         {% if messages %}
@@ -94,13 +94,14 @@
                         </thead>
                         <tbody>
                             {% for category in categories %}
-                            <tr>
+                            <tr data-description="{{ category.description }}">
                                 <td>{{ category.id }}</td>
                                 <td>{{ category.name }}</td>
-                                <td>{{ category.description|truncatechars:60 }}</td>
+                                <td>{{ category.description|truncatechars:60|default:category.description }}</td>
                                 <td>{{ category.created_at|date:"Y-m-d" }}</td>
                                 <td>
-                                    <a href="" class="btn btn-sm btn-success">
+                                    <a href="" class="btn btn-sm btn-success" data-toggle="modal"
+                                        data-target="#modal-update-{{ category.id }}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a href="" class="btn btn-sm btn-danger" data-toggle="modal"
@@ -114,8 +115,8 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="modal-delete-{{ category.id }}">Deleting Category
-                                                "{{category.name}}"!</h5>
+                                            <h5 class="modal-title" id="modal-delete-{{ category.id }}">Deleting
+                                                Category "{{category.name}}"!</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
@@ -132,6 +133,42 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="modal fade" id="modal-update-{{ category.id }}" tabindex="-1" role="dialog"
+                                aria-labelledby="modal-update-categoryLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-scrollable" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modal-update-categoryLabel">Update Category "{{ category.name }}"</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form action="{% url 'update_category' category.id %}" method="post">
+                                                {% csrf_token %}
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">Name</label>
+                                                    <div class="col-sm-9">
+                                                        {{ form.name }}
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label class="col-sm-3 col-form-label">Description</label>
+                                                    <div class="col-sm-9">
+                                                        {{ form.description }}
+                                                    </div>
+                                                </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-outline-primary"
+                                                data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Update</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -142,4 +179,25 @@
     <!--Row-->
 
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.btn-success').forEach(function (button) {
+            button.addEventListener('click', function (event) {
+                const categoryId = this.getAttribute('data-target').split('-').pop();
+                const modal = document.getElementById('modal-update-' + categoryId);
+
+                // Get the full data from the corresponding row
+                const row = this.closest('tr');
+                const categoryName = row.querySelector('td:nth-child(2)').innerText;
+                const categoryDescription = row.getAttribute('data-description');  // Full description
+
+                // Populate the form fields
+                modal.querySelector('input[name="name"]').value = categoryName;
+                modal.querySelector('textarea[name="description"]').value = categoryDescription;
+            });
+        });
+    });
+</script>
+
 {% endblock %}
