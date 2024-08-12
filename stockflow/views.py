@@ -161,6 +161,26 @@ def createCategory(request):
 
 
 @login_required(login_url='login')
+def updateCategory(request, pk):
+    try:
+        category = Category.objects.get(id=pk)
+    except Category.DoesNotExist:
+        messages.error(request, 'Category does not exist.')
+        return redirect('category')
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully')
+            return redirect('category')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    context = {'form': form, 'category': category}
+    return render(request, 'category.html', context)
+
+
+@login_required(login_url='login')
 def deleteCategory(request, pk):
     try:
         category = Category.objects.get(id=pk)
