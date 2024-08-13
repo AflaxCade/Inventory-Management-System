@@ -197,3 +197,14 @@ def product(request):
     form = CategoryForm()
     context = {'products': products, 'form': form}
     return render(request, 'product.html', context)
+
+
+@login_required(login_url='login')
+def deleteProduct(request, pk):
+    try:
+        product = Product.objects.get(id=pk)
+        product.delete()
+        messages.success(request, f'{product.name} deleted successfully.')
+    except ObjectDoesNotExist:
+        messages.error(request, 'Product does not exist.')
+    return redirect('product')
