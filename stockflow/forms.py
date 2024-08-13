@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Supplier, Category
+from .models import Customer, Supplier, Category, Product
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm, PasswordChangeForm, UserCreationForm
 
@@ -80,6 +80,23 @@ class CategoryForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Category Name', 'required': True}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'required': True}),
+        }
+
+
+class ProductForm(forms.ModelForm):
+    """
+    Form for creating and updating Product instances.
+    """
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'price', 'quantity', 'category', 'supplier']
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Product Name', 'required': True}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Description', 'required': True}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Price', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity', 'required': True}),
+            'category': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Category', 'required': True}),
+            'supplier': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Supplier', 'required': True}),
         }
 
 
