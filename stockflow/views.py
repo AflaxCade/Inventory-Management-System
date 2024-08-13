@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm
+from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm
 from .models import Customer, Supplier, Category, Product
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -194,9 +194,23 @@ def deleteCategory(request, pk):
 @login_required(login_url='login')
 def product(request):
     products = Product.objects.all()
-    form = CategoryForm()
+    form = ProductForm()
     context = {'products': products, 'form': form}
     return render(request, 'product.html', context)
+
+
+@login_required(login_url='login')
+def createProduct(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product created successfully')
+            return redirect('product')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    return redirect('product')
 
 
 @login_required(login_url='login')
