@@ -212,6 +212,26 @@ def createProduct(request):
             messages.error(request, f'{error_message}')
     return redirect('product')
 
+@login_required(login_url='login')
+def updateProduct(request, pk):
+    try:
+        product = Product.objects.get(id=pk)
+    except Product.DoesNotExist:
+        messages.error(request, 'Product does not exist.')
+        return redirect('product')
+    form = ProductForm(instance=product)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product updated successfully')
+            return redirect('product')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    context = {'form': form, 'product': product}
+    return render(request, 'edit_product.html', context)
+
 
 @login_required(login_url='login')
 def deleteProduct(request, pk):
