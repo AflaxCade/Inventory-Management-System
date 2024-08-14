@@ -79,9 +79,25 @@ def profile(request):
 def customer(request):
 
     customers = Customer.objects.all()
-    context = {'customers': customers}
+    form = CustomerForm()
+    context = {'customers': customers, 'form': form}
 
     return render(request, 'customer.html', context)
+
+
+@login_required(login_url='login')
+def createCustomer(request):
+    form = CustomerForm()
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Customer created successfully')
+            return redirect('customer')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    return redirect('customer')
 
 
 @login_required(login_url='login')
