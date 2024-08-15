@@ -101,6 +101,17 @@ def createCustomer(request):
 
 
 @login_required(login_url='login')
+def deleteCustomer(request, pk):
+    try:
+        customer = Customer.objects.get(id=pk)
+        customer.delete()
+        messages.success(request, f'{customer.name} deleted successfully.')
+    except ObjectDoesNotExist:
+        messages.error(request, 'Customer does not exist.')
+    return redirect('customer')
+
+
+@login_required(login_url='login')
 def supplier(request):
     suppliers = Supplier.objects.all()
     form = SupplierForm()
