@@ -25,7 +25,7 @@ class CreateUserForm(UserCreationForm):
         self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password', 'class': 'form-control'})
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data['email'].lower()
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError('Email already in use.')
         return email
@@ -48,7 +48,7 @@ class CustomerForm(forms.ModelForm):
         }
 
     def clean_email(self):
-        email = self.cleaned_data['email']
+        email = self.cleaned_data['email'].lower()
         qs = Customer.objects.exclude(id=self.instance.id).filter(email=email)
         if qs.exists():
             raise forms.ValidationError('Email already in use.')
