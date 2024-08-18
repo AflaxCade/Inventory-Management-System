@@ -101,6 +101,28 @@ def createCustomer(request):
 
 
 @login_required(login_url='login')
+def updateCustomer(request, pk):
+    try:
+        customer = Customer.objects.get(id=pk)
+    except Customer.DoesNotExist:
+        messages.error(request, 'Customer does not exist.')
+        return redirect('customer')
+    form = CustomerForm(instance=customer)
+    if request.method == 'POST':
+        form = CustomerForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Customer updated successfully')
+            return redirect('customer')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+            return redirect('customer')
+    context = {'form': form, 'customer': customer}
+    return render(request, 'customer.html', context)
+    
+
+@login_required(login_url='login')
 def deleteCustomer(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -203,6 +225,7 @@ def updateCategory(request, pk):
         else:
             error_message = form.errors.as_text()
             messages.error(request, f'{error_message}')
+            return redirect('category')
     context = {'form': form, 'category': category}
     return render(request, 'category.html', context)
 
