@@ -76,3 +76,24 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Order(models.Model):
+    """
+    Model to represent an Order.
+    """
+    STATUS = (
+        ('Pending', 'Pending'),
+        ('Shipped', 'Shipped'),
+        ('Delivered', 'Delivered'),
+        ('Cancelled', 'Cancelled'),
+    )
+    
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    status = models.CharField(max_length=200, choices=STATUS)
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'Order of {self.quantity} {self.product.name}(s) by {self.customer.name} on {self.date_created}'
