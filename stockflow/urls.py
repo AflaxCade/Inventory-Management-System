@@ -30,6 +30,7 @@ urlpatterns = [
     path('create_product/', views.createProduct, name='create_product'),
     path('delete_product/<str:pk>/', views.deleteProduct, name='delete_product'),
 
+    path('order/', views.order, name='order'),
 
 
     # reset password urls
