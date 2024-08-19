@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm
-from .models import Customer, Supplier, Category, Product
+from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm, OrderForm
+from .models import Customer, Supplier, Category, Product, Order
 from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
@@ -292,3 +292,11 @@ def deleteProduct(request, pk):
     except ObjectDoesNotExist:
         messages.error(request, 'Product does not exist.')
     return redirect('product')
+
+
+@login_required(login_url='login')
+def order(request):
+    orders = Order.objects.all()
+    form = OrderForm()
+    context = {'orders': orders, 'form': form}
+    return render(request, 'order.html', context)
