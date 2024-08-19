@@ -1,5 +1,5 @@
 from django import forms
-from .models import Customer, Supplier, Category, Product
+from .models import Customer, Supplier, Category, Product, Order
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm, PasswordChangeForm, UserCreationForm
 
@@ -98,6 +98,22 @@ class ProductForm(forms.ModelForm):
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity', 'required': True}),
             'category': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Category', 'required': True}),
             'supplier': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Supplier', 'required': True}),
+        }
+
+
+class OrderForm(forms.ModelForm):
+    """
+    Form for creating an Order instance.
+    """
+
+    class Meta:
+        model = Order
+        fields = ['customer', 'product', 'quantity', 'status']
+        widgets = {
+            'customer': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Customer', 'required': True}),
+            'product': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Product', 'required': True}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity', 'required': True}),
+            'status': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Status', 'required': True}),
         }
 
 
