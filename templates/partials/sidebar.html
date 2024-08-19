@@ -44,8 +44,8 @@
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="#">
+    <li class="nav-item {% if request.path == '/order/' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'order' %}">
             <i class="fas fa-fw fa-shopping-cart"></i>
             <span>Orders</span>
         </a>
