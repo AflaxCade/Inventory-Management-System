@@ -4,8 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
 from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm, OrderForm
-from .models import Customer, Supplier, Category, Product, Order
+from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import transaction
 
 # Create your views here.
 
@@ -300,3 +301,37 @@ def order(request):
     form = OrderForm()
     context = {'orders': orders, 'form': form}
     return render(request, 'order.html', context)
+
+
+@login_required(login_url='login')
+def process_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            product = order.product
+            if order.quantity > product.quantity:
+                messages.error(request, f'Not enough stock for {product.name}. Only {product.quantity} left.')
+                return redirect('order')
+            else:
+                try:
+                    with transaction.atomic():
+                         # Update Product Quantity
+                        product.quantity -= order.quantity
+                        product.save()
+                        # Save the Order
+                        order.save()
+
+                        # Create Invoice
+                        invoice = Invoice(order=order, quantity=order.quantity, price=product.price, amount=product.price * order.quantity)
+                        invoice.save()
+
+                         # Success message
+                        messages.success(request, 'Order placed successfully.')
+                        return redirect('order')
+                except Exception as e:
+                    messages.error(request, f'Error processing the order: {e}')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    return redirect('order')
