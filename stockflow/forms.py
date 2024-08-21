@@ -115,6 +115,12 @@ class OrderForm(forms.ModelForm):
             'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity', 'required': True}),
             'status': forms.Select(attrs={'class': 'form-control', 'placeholder': 'Status', 'required': True}),
         }
+    
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get('quantity')
+        if quantity <= 0:
+            raise forms.ValidationError("Quantity must be greater than zero.")
+        return quantity
 
 
 class CustomPasswordResetForm(PasswordResetForm):
