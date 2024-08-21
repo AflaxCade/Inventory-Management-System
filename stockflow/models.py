@@ -97,3 +97,17 @@ class Order(models.Model):
     
     def __str__(self):
         return f'Order of {self.quantity} {self.product.name}(s) by {self.customer.name} on {self.date_created}'
+    
+
+class Invoice(models.Model):
+    """
+    Model to represent an Invoice.
+    """
+    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    date_created = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'Invoice for {self.order.customer.name} on {self.date_created}'
