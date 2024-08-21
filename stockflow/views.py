@@ -53,7 +53,9 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def home(request):
-    return render(request, 'dashboard.html', {})
+    invoices = Invoice.objects.all().order_by('-id')[:5]
+    context = {'invoices': invoices}
+    return render(request, 'dashboard.html', context)
 
 
 @login_required(login_url='login')

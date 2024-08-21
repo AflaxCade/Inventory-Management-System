@@ -143,7 +143,7 @@
         <div class="col-xl-12 col-lg-7 mb-4">
             <div class="card">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Invoice</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Invoice of Last 5 Orders</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
@@ -151,47 +151,35 @@
                             <tr>
                                 <th>Order ID</th>
                                 <th>Customer</th>
-                                <th>Item</th>
+                                <th>Product</th>
+                                <th>price</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
                                 <th>Status</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {% for invoice in invoices %}
                             <tr>
-                                <td><a href="#">RA0449</a></td>
-                                <td>Udin Wayang</td>
-                                <td>Nasi Padang</td>
-                                <td><span class="badge badge-success">Delivered</span></td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
+                                <td><a href="#">{{ invoice.order_id }}</a></td>
+                                <td>{{invoice.order.customer}}</td>
+                                <td>{{invoice.order.product}}</td>
+                                <td>{{invoice.price}}</td>
+                                <td>{{invoice.quantity}}</td>
+                                <td>{{invoice.amount}}</td>
+                                <td>
+                                    {% if invoice.order.status == 'Pending' %}
+                                        <span class="badge badge-warning">{{ invoice.order.status }}</span>
+                                    {% elif invoice.order.status == 'Shipped' %}
+                                        <span class="badge badge-primary">{{ invoice.order.status }}</span>
+                                    {% elif invoice.order.status == 'Delivered' %}
+                                        <span class="badge badge-success">{{ invoice.order.status }}</span>
+                                    {% elif invoice.order.status == 'Cancelled' %}
+                                        <span class="badge badge-danger">{{ invoice.order.status }}</span>
+                                    {% endif %}
+                                </td>
                             </tr>
-                            <tr>
-                                <td><a href="#">RA5324</a></td>
-                                <td>Jaenab Bajigur</td>
-                                <td>Gundam 90' Edition</td>
-                                <td><span class="badge badge-warning">Shipping</span></td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">RA8568</a></td>
-                                <td>Rivat Mahesa</td>
-                                <td>Oblong T-Shirt</td>
-                                <td><span class="badge badge-danger">Pending</span></td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">RA1453</a></td>
-                                <td>Indri Junanda</td>
-                                <td>Hat Rounded</td>
-                                <td><span class="badge badge-info">Processing</span></td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
-                            </tr>
-                            <tr>
-                                <td><a href="#">RA1998</a></td>
-                                <td>Udin Cilok</td>
-                                <td>Baby Powder</td>
-                                <td><span class="badge badge-success">Delivered</span></td>
-                                <td><a href="#" class="btn btn-sm btn-primary">Detail</a></td>
-                            </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
                 </div>
