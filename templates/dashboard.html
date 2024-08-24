@@ -152,8 +152,8 @@
                                 <th>Order ID</th>
                                 <th>Customer</th>
                                 <th>Product</th>
-                                <th>price</th>
                                 <th>Quantity</th>
+                                <th>price</th>
                                 <th>Amount</th>
                                 <th>Status</th>
                             </tr>
@@ -164,8 +164,8 @@
                                 <td><a href="#">{{ invoice.order_id }}</a></td>
                                 <td>{{invoice.order.customer}}</td>
                                 <td>{{invoice.order.product}}</td>
-                                <td>{{invoice.price}}</td>
                                 <td>{{invoice.quantity}}</td>
+                                <td>{{invoice.price}}</td>
                                 <td>{{invoice.amount}}</td>
                                 <td>
                                     {% if invoice.order.status == 'Pending' %}
