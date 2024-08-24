@@ -34,6 +34,8 @@ urlpatterns = [
     path('create_order/', views.process_order, name='create_order'),
 
 
+    path('invoice/', views.invoice, name='invoice'),
+
     # reset password urls
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name="account/password_reset_form.html", form_class=CustomPasswordResetForm), name='password_reset'),
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(template_name="account/password_reset_done.html"), name='password_reset_done'),
