@@ -337,3 +337,10 @@ def process_order(request):
             error_message = form.errors.as_text()
             messages.error(request, f'{error_message}')
     return redirect('order')
+
+
+@login_required(login_url='login')
+def invoice(request):
+    invoices = Invoice.objects.all()
+    context = {'invoices': invoices}
+    return render(request, 'invoice.html', context)
