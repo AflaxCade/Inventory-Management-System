@@ -51,5 +51,12 @@
         </a>
     </li>
 
+    <li class="nav-item {% if request.path == '/invoice/' %}active{% endif %}">
+        <a class="nav-link" href="{% url 'invoice' %}">
+            <i class="fas fa-fw fa-dollar-sign"></i>
+            <span>Invoices</span>
+        </a>
+    </li>
+
     <!-- end new -->
 </ul>
