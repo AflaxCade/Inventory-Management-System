@@ -56,7 +56,7 @@
                             {% for invoice in invoices %}
                             <tr>
                                 <td>{{ invoice.id }}</td>
-                                <td><a href="#">{{ invoice.order_id }}</a></td>
+                                <td><a href="{% url 'update_order' invoice.order.id %}">{{ invoice.order.id }}</a></td>
                                 <td>{{invoice.order.customer}}</td>
                                 <td>{{invoice.order.product}}</td>
                                 <td>{{invoice.quantity}}</td>
