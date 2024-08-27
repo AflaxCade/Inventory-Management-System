@@ -121,7 +121,24 @@ class OrderForm(forms.ModelForm):
         if quantity <= 0:
             raise forms.ValidationError("Quantity must be greater than zero.")
         return quantity
+    
+    def save(self, commit=True):
+        order = super().save(commit=False)
+        product = order.product
+        current_quantity = order.quantity
+        new_status = self.cleaned_data['status']
 
+        if new_status == 'Cancelled':
+            # Return the order quantity to the product's stock
+            product.quantity += current_quantity
+            product.save()
+
+            # Set order quantity to 0 since it's cancelled
+            order.quantity = 0
+
+        if commit:
+            order.save()
+        return order
 
 class CustomPasswordResetForm(PasswordResetForm):
     """
