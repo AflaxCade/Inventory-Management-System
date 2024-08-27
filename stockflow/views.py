@@ -340,6 +340,51 @@ def process_order(request):
 
 
 @login_required(login_url='login')
+def updateOrder(request, pk):
+    try:
+        order = Order.objects.get(id=pk)
+    except Order.DoesNotExist:
+        messages.error(request, 'Order does not exist.')
+        return redirect('order')
+    product = order.product
+    current_quantity = order.quantity
+    if request.method == 'POST':
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            new_quantity = form.cleaned_data['quantity']
+            quantity_difference = new_quantity - current_quantity
+            if new_quantity > product.quantity + current_quantity:
+                messages.error(request, f'Not enough stock for {product.name}. Only {product.quantity + current_quantity} available.')
+                return redirect('order')
+            else:
+                try:
+                    with transaction.atomic():
+                       # Adjust product quantity based on the difference
+                        product.quantity -= quantity_difference
+                        product.save()
+
+                        # Save the updated order
+                        order = form.save()
+
+                        # Update the invoice if necessary
+                        order.invoice.amount = product.price * new_quantity
+                        order.invoice.quantity = new_quantity
+                        order.invoice.save()
+
+                        # Success message
+                        messages.success(request, 'Order updated successfully')
+                        return redirect('order')
+                except Exception as e:
+                    messages.error(request, f'Error processing the order: {e}')
+        else:
+            error_message = form.errors.as_text()
+            messages.error(request, f'{error_message}')
+    form = OrderForm(instance=order)
+    context = {'form': form, 'order': order}
+    return render(request, 'edit_order.html', context)
+
+
+@login_required(login_url='login')
 def invoice(request):
     invoices = Invoice.objects.all()
     context = {'invoices': invoices}
