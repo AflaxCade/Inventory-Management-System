@@ -53,7 +53,7 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def home(request):
-    invoices = Invoice.objects.order_by('-id')[:5]
+    invoices = Invoice.objects.exclude(order__status='Cancelled').order_by('-id')[:5]
     context = {'invoices': invoices}
     return render(request, 'dashboard.html', context)
 
@@ -134,6 +134,27 @@ def deleteCustomer(request, pk):
     except ObjectDoesNotExist:
         messages.error(request, 'Customer does not exist.')
     return redirect('customer')
+
+
+@login_required(login_url='login')
+def customerOrders(request, pk):
+    try:
+        customer = Customer.objects.get(id=pk)
+    except Customer.DoesNotExist:
+        messages.error(request, 'Customer does not exist.')
+        return redirect('customer')
+    orders = customer.order_set.all()
+    pending_orders = orders.filter(status='Pending').count()
+    shipped_orders = orders.filter(status='Shipped').count()
+    delivered_orders = orders.filter(status='Delivered').count()
+    cancelled_orders = orders.filter(status='Cancelled').count()
+    context = {'customer': customer,
+               'orders': orders,
+               'pending_orders': pending_orders,
+               'shipped_orders': shipped_orders,
+               'delivered_orders': delivered_orders,
+               'cancelled_orders': cancelled_orders,}
+    return render(request, 'customer_orders.html', context)
 
 
 @login_required(login_url='login')
@@ -386,6 +407,6 @@ def updateOrder(request, pk):
 
 @login_required(login_url='login')
 def invoice(request):
-    invoices = Invoice.objects.all()
+    invoices = Invoice.objects.exclude(order__status='Cancelled')
     context = {'invoices': invoices}
     return render(request, 'invoice.html', context)
