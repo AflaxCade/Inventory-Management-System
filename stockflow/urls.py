@@ -4,7 +4,7 @@ from .forms import CustomPasswordResetForm, CustomSetPasswordForm, CustomPasswor
 from . import views
 
 urlpatterns = [
-    path('register/', views.registerPage, name="register"),
+    path('register/', views.registerPage, name='register'),
     path('login/', views.loginPage, name='login'),
     path('logout/', views.logoutUser, name='logout'),
     path('profile/', views.profile, name='profile'),
@@ -14,6 +14,8 @@ urlpatterns = [
     path('create_customer/', views.createCustomer, name='create_customer'),
     path('update_customer/<str:pk>/', views.updateCustomer, name='update_customer'),
     path('delete_customer/<str:pk>/', views.deleteCustomer, name='delete_customer'),
+
+    path('customer/<str:pk>/', views.customerOrders, name='customer_orders'),
 
     path('supplier/', views.supplier, name='supplier'),
     path('create_supplier/', views.createSupplier, name='create_supplier'),
