@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% block title %}StockFolw - Customer Orders{% endblock %}
+
+{% block content %}
+<div class="container-fluid" id="container-wrapper">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Orders for {{ customer.name }}</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item">Customer Orders</li>
+        </ol>
+    </div>
+
+    <div>
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Success!</strong> {{ message }}
+            <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        {% else %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error!</strong> {{ message }}
+            <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="col-lg-12">
+
+        <div class="row">
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card bg-gradient-success font-weight-bold text-white">
+                    <div class="h5 card-body">
+                        Delivered
+                        
+                        <div class="font-weight-bold text-white pt-3">{{delivered_orders}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card bg-gradient-warning font-weight-bold text-white">
+                    <div class="h5 card-body">
+                        Pending
+                        
+                        <div class="font-weight-bold text-white pt-3">{{ pending_orders }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card bg-gradient-primary font-weight-bold text-white">
+                    <div class="h5 card-body">
+                        Shipped
+                        
+                        <div class="font-weight-bold text-white pt-3">{{ shipped_orders }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card bg-gradient-danger font-weight-bold text-white">
+                    <div class="h5 card-body">
+                        Cancelled
+                        
+                        <div class="font-weight-bold text-white pt-3">{{ cancelled_orders }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Row -->
+    <div class="row">
+        <!-- DataTable with Hover -->
+        <div class="col-lg-12">
+            <div class="card mb-4">
+                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                    <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal-add-customer">
+                        <i class="fas fa-plus"></i> Place Order
+                    </button>
+                </div>
+                <div class="table-responsive p-3">
+                    <table class="table align-items-center table-flush table-hover table-sm" id="dataTableHover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Product</th>
+                                <th>Qty</th>
+                                <th>Status</th>
+                                <th>Date Orderd</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                            <tr>
+                                <td>{{ order.id }}</td>
+                                <td>{{ order.product }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <td>
+                                    {% if order.status == 'Pending' %}
+                                    <span class="badge badge-warning">{{ order.status }}</span>
+                                    {% elif order.status == 'Shipped' %}
+                                    <span class="badge badge-primary">{{ order.status }}</span>
+                                    {% elif order.status == 'Delivered' %}
+                                    <span class="badge badge-success">{{ order.status }}</span>
+                                    {% elif order.status == 'Cancelled' %}
+                                    <span class="badge badge-danger">{{ order.status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ order.date_created}}</td>
+                                <td>
+                                    <a href="{% url 'update_order' order.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Row-->
+
+</div>
+{% endblock %}
