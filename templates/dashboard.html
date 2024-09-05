@@ -143,7 +143,7 @@
         <div class="col-xl-12 col-lg-7 mb-4">
             <div class="card">
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Invoice of Last 10 Orders</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Last 10 Orders</h6>
                 </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
@@ -154,28 +154,26 @@
                                 <th>Product</th>
                                 <th>Quantity</th>
                                 <th>price</th>
-                                <th>Amount</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for invoice in invoices %}
+                            {% for order in orders %}
                             <tr>
-                                <td><a href="{% url 'update_order' invoice.order.id %}">{{ invoice.order.id }}</a></td>
-                                <td>{{invoice.order.customer}}</td>
-                                <td>{{invoice.order.product}}</td>
-                                <td>{{invoice.quantity}}</td>
-                                <td>{{invoice.price}}</td>
-                                <td>{{invoice.amount}}</td>
+                                <td><a href="{% url 'update_order' order.id %}">{{ order.id }}</a></td>
+                                <td>{{order.customer}}</td>
+                                <td>{{order.product}}</td>
+                                <td>{{order.quantity}}</td>
+                                <td>{{ order.product.price }}</td>
                                 <td>
-                                    {% if invoice.order.status == 'Pending' %}
-                                        <span class="badge badge-warning">{{ invoice.order.status }}</span>
-                                    {% elif invoice.order.status == 'Shipped' %}
-                                        <span class="badge badge-primary">{{ invoice.order.status }}</span>
-                                    {% elif invoice.order.status == 'Delivered' %}
-                                        <span class="badge badge-success">{{ invoice.order.status }}</span>
-                                    {% elif invoice.order.status == 'Cancelled' %}
-                                        <span class="badge badge-danger">{{ invoice.order.status }}</span>
+                                    {% if order.status == 'Pending' %}
+                                        <span class="badge badge-warning">{{ order.status }}</span>
+                                    {% elif order.status == 'Shipped' %}
+                                        <span class="badge badge-primary">{{ order.status }}</span>
+                                    {% elif order.status == 'Delivered' %}
+                                        <span class="badge badge-success">{{ order.status }}</span>
+                                    {% elif order.status == 'Cancelled' %}
+                                        <span class="badge badge-danger">{{ order.status }}</span>
                                     {% endif %}
                                 </td>
                             </tr>

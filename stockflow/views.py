@@ -54,8 +54,8 @@ def logoutUser(request):
 
 @login_required(login_url='login')
 def home(request):
-    invoices = Invoice.objects.exclude(order__status='Cancelled').order_by('-id')[:10]
-    context = {'invoices': invoices}
+    orders = Order.objects.exclude(status='Cancelled').order_by('-id')[:10]
+    context = {'orders': orders}
     return render(request, 'dashboard.html', context)
 
 
