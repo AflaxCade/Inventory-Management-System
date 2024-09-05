@@ -11,11 +11,10 @@ urlpatterns = [
 
     path('', views.home, name='home'),
     path('customer/', views.customer, name='customer'),
+    path('customer/<str:pk>/', views.customerOrders, name='customer_orders'),
     path('create_customer/', views.createCustomer, name='create_customer'),
     path('update_customer/<str:pk>/', views.updateCustomer, name='update_customer'),
     path('delete_customer/<str:pk>/', views.deleteCustomer, name='delete_customer'),
-
-    path('customer/<str:pk>/', views.customerOrders, name='customer_orders'),
 
     path('supplier/', views.supplier, name='supplier'),
     path('create_supplier/', views.createSupplier, name='create_supplier'),
@@ -34,6 +33,7 @@ urlpatterns = [
 
     path('order/', views.order, name='order'),
     path('create_order/', views.process_order, name='create_order'),
+    path('multiple_orders/<str:pk>/', views.multipleOrders, name='multiple_orders'),
     path('update_order/<str:pk>/', views.updateOrder, name='update_order'),
 
 
