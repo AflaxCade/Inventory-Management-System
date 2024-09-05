@@ -1,9 +1,10 @@
+from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .decorators import unauthenticated_user
-from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm, OrderForm
+from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm, OrderForm, MultipleOrderForm
 from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
@@ -155,6 +156,52 @@ def customerOrders(request, pk):
                'delivered_orders': delivered_orders,
                'cancelled_orders': cancelled_orders,}
     return render(request, 'customer_orders.html', context)
+
+
+@login_required(login_url='login')
+def multipleOrders(request, pk):
+    try:
+        customer = Customer.objects.get(id=pk)
+    except Customer.DoesNotExist:
+        messages.error(request, 'Customer does not exist.')
+        return redirect('customer')
+
+    OrderFormSet = inlineformset_factory(Customer, Order, form=MultipleOrderForm, extra=5)
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+
+    if request.method == 'POST':
+        formset = OrderFormSet(request.POST, instance=customer)
+        if formset.is_valid():
+            try:
+                with transaction.atomic():
+                    orders = formset.save(commit=False)
+                    for order in orders:
+                        product = order.product
+                        
+                        # Deduct product stock based on the validated form quantity
+                        product.quantity -= order.quantity
+                        product.save()
+
+                        # Save the order
+                        order.save()
+
+                    formset.save_m2m()  # Save any many-to-many relationships if applicable
+                    messages.success(request, 'Orders placed successfully.')
+                    return redirect('customer_orders', pk=customer.id)
+            except Exception as e:
+                messages.error(request, f'Error saving orders: {e}')
+        else:
+            # Display form errors
+            error_messages = []
+            for form in formset:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        error_messages.append(f'{field}: {error}')
+            if error_messages:
+                messages.error(request, ' '.join(error_messages))
+
+    context = {'formset': formset, 'customer': customer}
+    return render(request, 'multiple_orders.html', context)
 
 
 @login_required(login_url='login')
