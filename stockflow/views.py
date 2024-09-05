@@ -434,11 +434,6 @@ def updateOrder(request, pk):
                         # Save the updated order
                         order = form.save()
 
-                        # Update the invoice if necessary
-                        order.invoice.amount = product.price * new_quantity
-                        order.invoice.quantity = new_quantity
-                        order.invoice.save()
-
                         # Success message
                         messages.success(request, 'Order updated successfully')
                         return redirect('order')
