@@ -139,7 +139,40 @@ class OrderForm(forms.ModelForm):
         if commit:
             order.save()
         return order
+    
 
+class MultipleOrderForm(forms.ModelForm):
+    """
+    Form for creating multiple orders.
+    """
+    
+    class Meta:
+        model = Order
+        fields = ['product', 'quantity', 'status']
+        widgets = {
+            'product': forms.Select(attrs={'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+    
+    def clean_quantity(self):
+        quantity = self.cleaned_data.get('quantity')
+        if quantity <= 0:
+            raise forms.ValidationError("Quantity must be greater than zero.")
+        return quantity
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        product = cleaned_data.get('product')
+        quantity = cleaned_data.get('quantity')
+        
+        if product and quantity:
+            if quantity > product.quantity:
+                raise forms.ValidationError(
+                    f"Not enough stock for {product.name}. Only {product.quantity} left."
+                )
+        return cleaned_data
+    
 class CustomPasswordResetForm(PasswordResetForm):
     """
     Custom form for resetting password.
