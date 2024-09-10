@@ -38,6 +38,7 @@ urlpatterns = [
 
 
     path('invoice/', views.invoice, name='invoice'),
+    path('invoice_details/<str:pk>/', views.invoiceDetails, name='invoice_details'),
 
     # reset password urls
     path('password-reset/', auth_views.PasswordResetView.as_view(template_name="account/password_reset_form.html", form_class=CustomPasswordResetForm), name='password_reset'),
