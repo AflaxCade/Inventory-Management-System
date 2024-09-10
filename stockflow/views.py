@@ -8,6 +8,7 @@ from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, Pro
 from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+import uuid
 
 # Create your views here.
 
@@ -156,52 +157,6 @@ def customerOrders(request, pk):
                'delivered_orders': delivered_orders,
                'cancelled_orders': cancelled_orders,}
     return render(request, 'customer_orders.html', context)
-
-
-@login_required(login_url='login')
-def multipleOrders(request, pk):
-    try:
-        customer = Customer.objects.get(id=pk)
-    except Customer.DoesNotExist:
-        messages.error(request, 'Customer does not exist.')
-        return redirect('customer')
-
-    OrderFormSet = inlineformset_factory(Customer, Order, form=MultipleOrderForm, extra=5)
-    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
-
-    if request.method == 'POST':
-        formset = OrderFormSet(request.POST, instance=customer)
-        if formset.is_valid():
-            try:
-                with transaction.atomic():
-                    orders = formset.save(commit=False)
-                    for order in orders:
-                        product = order.product
-                        
-                        # Deduct product stock based on the validated form quantity
-                        product.quantity -= order.quantity
-                        product.save()
-
-                        # Save the order
-                        order.save()
-
-                    formset.save_m2m()  # Save any many-to-many relationships if applicable
-                    messages.success(request, 'Orders placed successfully.')
-                    return redirect('customer_orders', pk=customer.id)
-            except Exception as e:
-                messages.error(request, f'Error saving orders: {e}')
-        else:
-            # Display form errors
-            error_messages = []
-            for form in formset:
-                for field, errors in form.errors.items():
-                    for error in errors:
-                        error_messages.append(f'{field}: {error}')
-            if error_messages:
-                messages.error(request, ' '.join(error_messages))
-
-    context = {'formset': formset, 'customer': customer}
-    return render(request, 'multiple_orders.html', context)
 
 
 @login_required(login_url='login')
@@ -374,6 +329,60 @@ def order(request):
 
 
 @login_required(login_url='login')
+def multipleOrders(request, pk):
+    try:
+        customer = Customer.objects.get(id=pk)
+    except Customer.DoesNotExist:
+        messages.error(request, 'Customer does not exist.')
+        return redirect('customer')
+
+    OrderFormSet = inlineformset_factory(Customer, Order, form=MultipleOrderForm, extra=10)
+    formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
+
+    if request.method == 'POST':
+        formset = OrderFormSet(request.POST, instance=customer)
+        if formset.is_valid():
+            try:
+                with transaction.atomic():
+                    orders = formset.save(commit=False)
+                    total_amount = 0
+                    for order in orders:
+                        product = order.product
+                        product.quantity -= order.quantity
+                        product.save()
+
+                        order.save()
+                        total_amount += order.product.price * order.quantity
+                    
+                    formset.save_m2m()
+
+                    # Create the invoice
+                    invoice_number = str(uuid.uuid4()).replace('-', '').upper()[:10]  # Generate unique invoice number
+                    invoice = Invoice.objects.create(
+                        customer=customer,
+                        total_amount=total_amount,
+                        invoice_number=invoice_number,
+                    )
+                    invoice.orders.set(orders)
+
+                    messages.success(request, 'Orders placed successfully and Invoice created.')
+                    return redirect('customer_orders', pk=customer.id)
+            except Exception as e:
+                messages.error(request, f'Error saving orders: {e}')
+        else:
+            error_messages = []
+            for form in formset:
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        error_messages.append(f'{field}: {error}')
+            if error_messages:
+                messages.error(request, ' '.join(error_messages))
+
+    context = {'formset': formset, 'customer': customer}
+    return render(request, 'multiple_orders.html', context)
+
+
+@login_required(login_url='login')
 def process_order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -449,6 +458,29 @@ def updateOrder(request, pk):
 
 @login_required(login_url='login')
 def invoice(request):
-    invoices = Invoice.objects.exclude(order__status='Cancelled')
+    invoices = Invoice.objects.exclude(orders__status='Cancelled')
     context = {'invoices': invoices}
     return render(request, 'invoice.html', context)
+
+
+@login_required(login_url='login')
+def invoiceDetails(request, pk):
+    try:
+        invoice = Invoice.objects.get(id=pk)
+    except Invoice.DoesNotExist:
+        messages.error(request, 'Invoice does not exist.')
+        return redirect('invoice')
+    
+    orders = invoice.orders.all()
+    total_amount = 0
+    for order in orders:
+        order.total_price = order.quantity * order.product.price
+        total_amount += order.total_price
+
+    # Update the total amount of the invoice if it is different from the calculated total amount
+    if total_amount != invoice.total_amount:
+        invoice.total_amount = total_amount
+        invoice.save()
+        
+    context = {'invoice': invoice, 'orders': orders,}
+    return render(request, 'invoice_template.html', context)
