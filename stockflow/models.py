@@ -86,7 +86,6 @@ class Order(models.Model):
         ('Pending', 'Pending'),
         ('Shipped', 'Shipped'),
         ('Delivered', 'Delivered'),
-        ('Cancelled', 'Cancelled'),
     )
     
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -100,14 +99,11 @@ class Order(models.Model):
     
 
 class Invoice(models.Model):
-    """
-    Model to represent an Invoice.
-    """
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    date_created = models.DateTimeField(auto_now_add=True)
-    
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    orders = models.ManyToManyField(Order)
+    invoice_number = models.CharField(max_length=100, unique=True)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+
     def __str__(self):
-        return f'Invoice for {self.order.customer.name} on {self.date_created}'
+        return f"Invoice {self.invoice_number} for {self.customer.name}"
