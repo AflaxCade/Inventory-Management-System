@@ -383,7 +383,7 @@ def multipleOrders(request, pk):
 
 
 @login_required(login_url='login')
-def process_order(request):
+def singleOrder(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -402,8 +402,14 @@ def process_order(request):
                         order.save()
 
                         # Create Invoice
-                        invoice = Invoice(order=order, quantity=order.quantity, price=product.price, amount=product.price * order.quantity)
-                        invoice.save()
+                        total_amount = order.product.price * order.quantity
+                        invoice_number = str(uuid.uuid4()).replace('-', '').upper()[:10]  # Generate unique invoice number
+                        invoice = Invoice.objects.create(
+                            customer=order.customer,  # Assuming 'customer' field is available in Order
+                            total_amount=total_amount,
+                            invoice_number=invoice_number
+                        )
+                        invoice.orders.add(order)  # Add the order to the invoice
 
                          # Success message
                         messages.success(request, 'Order placed successfully.')
