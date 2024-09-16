@@ -1,3 +1,5 @@
+import decimal
+from decimal import Decimal
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -405,7 +407,7 @@ def singleOrder(request):
                         total_amount = order.product.price * order.quantity
                         invoice_number = str(uuid.uuid4()).replace('-', '').upper()[:10]  # Generate unique invoice number
                         invoice = Invoice.objects.create(
-                            customer=order.customer,  # Assuming 'customer' field is available in Order
+                            customer=order.customer,
                             total_amount=total_amount,
                             invoice_number=invoice_number
                         )
@@ -478,15 +480,28 @@ def invoiceDetails(request, pk):
         return redirect('invoice')
     
     orders = invoice.orders.all()
+    vat_rate = Decimal('0.05')  # 5% VAT
+    vat_total = 0
     total_amount = 0
+    
     for order in orders:
-        order.total_price = order.quantity * order.product.price
-        total_amount += order.total_price
+        order.sub_total = order.quantity * order.product.price
+        order.sub_vat = order.sub_total * vat_rate
+        order.sub_total_sub_vat = order.sub_total + order.sub_vat
+        vat_total += order.sub_total * vat_rate
+        total_amount += order.sub_total
+
+    total_with_vat = total_amount + vat_total
 
     # Update the total amount of the invoice if it is different from the calculated total amount
     if total_amount != invoice.total_amount:
         invoice.total_amount = total_amount
         invoice.save()
         
-    context = {'invoice': invoice, 'orders': orders,}
+    context = {
+        'invoice': invoice,
+        'orders': orders,
+        'vat_total': vat_total,
+        'total_with_vat': total_with_vat,
+    }
     return render(request, 'invoice_template.html', context)
