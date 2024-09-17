@@ -148,16 +148,16 @@ def customerOrders(request, pk):
         messages.error(request, 'Customer does not exist.')
         return redirect('customer')
     orders = customer.order_set.all()
+    invoices = Invoice.objects.filter(customer=customer).count()
     pending_orders = orders.filter(status='Pending').count()
     shipped_orders = orders.filter(status='Shipped').count()
     delivered_orders = orders.filter(status='Delivered').count()
-    cancelled_orders = orders.filter(status='Cancelled').count()
     context = {'customer': customer,
                'orders': orders,
+               'invoices': invoices,
                'pending_orders': pending_orders,
                'shipped_orders': shipped_orders,
-               'delivered_orders': delivered_orders,
-               'cancelled_orders': cancelled_orders,}
+               'delivered_orders': delivered_orders,}
     return render(request, 'customer_orders.html', context)
 
 
