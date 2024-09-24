@@ -1,0 +1,208 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link href="{% static 'img/logo/logo.png' %}" rel="icon">
+  <title>StockFolw - Customer Orders</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'css/ruang-admin.min.css' %}" rel="stylesheet">
+  <link href="{% static 'vendor/datatables/dataTables.bootstrap4.min.css' %}" rel="stylesheet">
+  </head>
+
+<body id="page-top">
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav sidebar sidebar-light accordion" id="accordionSidebar">
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+            <div class="sidebar-brand-icon">
+                <img src="{% static 'img/logo/logo2.png' %}">
+            </div>
+            <div class="sidebar-brand-text mx-3">StockFolw</div>
+        </a>
+        <hr class="sidebar-divider my-0">
+        <li class="nav-item {% if request.path == '/user/' %}active{% endif %}">
+            <a class="nav-link" href="/">
+                <i class="fas fa-fw fa-tachometer-alt"></i>
+                <span>Dashboard</span></a>
+        </li>
+        <hr class="sidebar-divider">          
+        <li class="nav-item {% if request.path == '/invoice/' %}active{% endif %}">
+            <a class="nav-link" href="{% url 'invoice' %}">
+                <i class="fas fa-fw fa-dollar-sign"></i>
+                <span>Invoices</span>
+            </a>
+        </li>
+    </ul>
+    <!-- end sidebar -->
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+
+        <!-- TopBar -->
+        {% include 'partials/topbar.html' %}
+        <!-- Topbar -->
+
+        <!-- content -->
+        <div class="container-fluid" id="container-wrapper">
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <h1 class="h3 mb-0 text-gray-800">Orders for {{ request.user.customer.name }}</h1>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item">Customer Orders</li>
+                </ol>
+            </div>
+        
+            <div>
+                {% if messages %}
+                {% for message in messages %}
+                {% if message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> {{ message }}
+                    <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                {% else %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error!</strong> {{ message }}
+                    <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                {% endif %}
+                {% endfor %}
+                {% endif %}
+            </div>
+        
+            <div class="col-lg-12">
+        
+                <div class="row">
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card bg-gradient-success font-weight-bold text-white">
+                            <div class="h5 card-body">
+                                Delivered
+                                <hr>
+                                <div class="font-weight-bold text-white">{{delivered_orders}}</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card bg-gradient-warning font-weight-bold text-white">
+                            <div class="h5 card-body">
+                                Pending
+                                <hr>
+                                <div class="font-weight-bold text-white">{{ pending_orders }}</div>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card bg-gradient-primary font-weight-bold text-white">
+                            <div class="h5 card-body">
+                                Shipped
+                                <hr>
+                                <div class="font-weight-bold text-white">{{ shipped_orders }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card bg-gradient-info font-weight-bold text-white">
+                            <div class="h5 card-body">
+                                Invoices
+                                <hr>
+                                <div class="font-weight-bold text-white">{{ invoices }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        
+            </div>
+        
+            <!-- Row -->
+            <div class="row">
+                <!-- DataTable with Hover -->
+                <div class="col-lg-12">
+                    <div class="card mb-4">
+                        <div class="table-responsive p-3">
+                            <table class="table align-items-center table-flush table-hover table-sm" id="dataTableHover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Product</th>
+                                        <th>Qty</th>
+                                        <th>Status</th>
+                                        <th>Date Orderd</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.product }}</td>
+                                        <td>{{ order.quantity }}</td>
+                                        <td>
+                                            {% if order.status == 'Pending' %}
+                                            <span class="badge badge-warning">{{ order.status }}</span>
+                                            {% elif order.status == 'Shipped' %}
+                                            <span class="badge badge-primary">{{ order.status }}</span>
+                                            {% elif order.status == 'Delivered' %}
+                                            <span class="badge badge-success">{{ order.status }}</span>
+                                            {% elif order.status == 'Cancelled' %}
+                                            <span class="badge badge-danger">{{ order.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ order.date_created}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Row-->
+        
+        </div>
+        <!-- end content -->
+
+        <!-- Modal Logout -->
+        {% include 'partials/modal_logout.html' %}
+        <!-- Modal Logout -->
+         
+      </div>
+      <!-- Footer -->
+      {% include 'partials/footer.html' %}
+      <!-- Footer -->
+    </div>
+  </div>
+
+  <!-- Scroll to top -->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'js/ruang-admin.min.js' %}"></script>
+
+  <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
+
+  <script>
+    $(document).ready(function () {
+      $('#dataTableHover').DataTable(); // ID From dataTable with Hover
+    });
+  </script>
+</body>
+
+</html>
