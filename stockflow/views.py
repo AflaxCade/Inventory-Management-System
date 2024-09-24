@@ -1,11 +1,10 @@
-import decimal
 from decimal import Decimal
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .decorators import unauthenticated_user
+from .decorators import unauthenticated_user, allowed_users, admin_only
 from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, ProductForm, OrderForm, MultipleOrderForm
 from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
@@ -56,15 +55,36 @@ def logoutUser(request):
 
 
 @login_required(login_url='login')
+@admin_only
 def home(request):
-    orders = Order.objects.exclude(status='Cancelled').order_by('-id')[:10]
+    orders = Order.objects.all().order_by('-id')[:10]
     context = {'orders': orders}
     return render(request, 'dashboard.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
+def userPage(request):
+    orders = request.user.customer.order_set.all()
+    invoices = Invoice.objects.filter(customer=request.user.customer).count()
+    pending_orders = orders.filter(status='Pending').count()
+    shipped_orders = orders.filter(status='Shipped').count()
+    delivered_orders = orders.filter(status='Delivered').count()
+    context = {'orders': orders,
+               'invoices': invoices,
+               'pending_orders': pending_orders,
+               'shipped_orders': shipped_orders,
+               'delivered_orders': delivered_orders,}
+    return render(request, 'user_page.html', context)
 
 
 @login_required(login_url='login')
 def profile(request):
-    customer = request.user.customer
+    try:
+        customer = request.user.customer
+    except Customer.DoesNotExist:
+        messages.error(request, 'Admins do not have a customer profile.')
+        previous_url = request.META.get('HTTP_REFERER', 'home')  # 'default_view' is the fallback
+        return redirect(previous_url)
     group = None
     if request.user.groups.exists():
         group = request.user.groups.all()[0].name
@@ -84,7 +104,6 @@ def profile(request):
 
 @login_required(login_url='login')
 def customer(request):
-
     customers = Customer.objects.all()
     form = CustomerForm()
     context = {'customers': customers, 'form': form}
@@ -141,6 +160,7 @@ def deleteCustomer(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['customer'])
 def customerOrders(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -466,7 +486,10 @@ def updateOrder(request, pk):
 
 @login_required(login_url='login')
 def invoice(request):
-    invoices = Invoice.objects.exclude(orders__status='Cancelled')
+    if request.user.is_staff:
+        invoices = Invoice.objects.select_related('customer').prefetch_related('orders')
+    else:
+        invoices = Invoice.objects.filter(customer=request.user.customer).select_related('customer').prefetch_related('orders')
     context = {'invoices': invoices}
     return render(request, 'invoice.html', context)
 
@@ -475,6 +498,12 @@ def invoice(request):
 def invoiceDetails(request, pk):
     try:
         invoice = Invoice.objects.get(id=pk)
+
+        # Restrict access for non-staff users to only their own invoices
+        if not request.user.is_staff and invoice.customer != request.user.customer:
+            messages.error(request, 'You do not have permission to view this invoice.')
+            return redirect('invoice')
+        
     except Invoice.DoesNotExist:
         messages.error(request, 'Invoice does not exist.')
         return redirect('invoice')
