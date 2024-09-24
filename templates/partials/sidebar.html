@@ -14,8 +14,7 @@
     </li>
     <hr class="sidebar-divider">
 
-    <!-- new -->
-
+    {% if request.user.is_staff %}
     <li class="nav-item {% if request.path == '/customer/' %}active{% endif %}">
         <a class="nav-link" href="{% url 'customer' %}">
             <i class="fas fa-fw fa-users"></i>
@@ -50,6 +49,7 @@
             <span>Orders</span>
         </a>
     </li>
+    {% endif %}
 
     <li class="nav-item {% if request.path == '/invoice/' %}active{% endif %}">
         <a class="nav-link" href="{% url 'invoice' %}">
@@ -58,5 +58,4 @@
         </a>
     </li>
 
-    <!-- end new -->
 </ul>
