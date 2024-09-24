@@ -97,7 +97,7 @@
                             <tr data-description="{{ category.description }}">
                                 <td>{{ category.id }}</td>
                                 <td>{{ category.name }}</td>
-                                <td>{{ category.description|truncatechars:60|default:category.description }}</td>
+                                <td>{{ category.description|truncatechars:55|default:category.description }}</td>
                                 <td>{{ category.created_at|date:"Y-m-d" }}</td>
                                 <td>
                                     <a href="" class="btn btn-sm btn-success" data-toggle="modal"
