@@ -29,6 +29,7 @@ def registerPage(request):
     context = {'form': form}
     return render(request, 'account/register.html', context)
 
+
 @unauthenticated_user
 def loginPage(request):
     if request.method == 'POST':
@@ -60,6 +61,7 @@ def home(request):
     orders = Order.objects.all().order_by('-id')[:10]
     context = {'orders': orders}
     return render(request, 'dashboard.html', context)
+
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
@@ -103,6 +105,7 @@ def profile(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def customer(request):
     customers = Customer.objects.all()
     form = CustomerForm()
@@ -112,6 +115,7 @@ def customer(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createCustomer(request):
     form = CustomerForm()
     if request.method == 'POST':
@@ -127,6 +131,7 @@ def createCustomer(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateCustomer(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -149,6 +154,7 @@ def updateCustomer(request, pk):
     
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteCustomer(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -160,7 +166,7 @@ def deleteCustomer(request, pk):
 
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['customer'])
+@allowed_users(allowed_roles=['admin'])
 def customerOrders(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -182,6 +188,7 @@ def customerOrders(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def supplier(request):
     suppliers = Supplier.objects.all()
     form = SupplierForm()
@@ -190,6 +197,7 @@ def supplier(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createSupplier(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -204,6 +212,7 @@ def createSupplier(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateSupplier(request, pk):
     try:
         supplier = Supplier.objects.get(id=pk)
@@ -225,6 +234,7 @@ def updateSupplier(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteSupplier(request, pk):
     try:
         supplier = Supplier.objects.get(id=pk)
@@ -236,6 +246,7 @@ def deleteSupplier(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def category(request):
     categories = Category.objects.all()
     form = CategoryForm()
@@ -244,6 +255,7 @@ def category(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createCategory(request):
     if request.method == 'POST':
         form = CategoryForm(request.POST)
@@ -258,6 +270,7 @@ def createCategory(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateCategory(request, pk):
     try:
         category = Category.objects.get(id=pk)
@@ -279,6 +292,7 @@ def updateCategory(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteCategory(request, pk):
     try:
         category = Category.objects.get(id=pk)
@@ -290,6 +304,7 @@ def deleteCategory(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def product(request):
     products = Product.objects.all()
     form = ProductForm()
@@ -298,6 +313,7 @@ def product(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def createProduct(request):
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -311,6 +327,7 @@ def createProduct(request):
     return redirect('product')
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateProduct(request, pk):
     try:
         product = Product.objects.get(id=pk)
@@ -332,6 +349,7 @@ def updateProduct(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def deleteProduct(request, pk):
     try:
         product = Product.objects.get(id=pk)
@@ -343,6 +361,7 @@ def deleteProduct(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def order(request):
     orders = Order.objects.all()
     form = OrderForm()
@@ -351,6 +370,7 @@ def order(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def multipleOrders(request, pk):
     try:
         customer = Customer.objects.get(id=pk)
@@ -405,6 +425,7 @@ def multipleOrders(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def singleOrder(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)
@@ -445,6 +466,7 @@ def singleOrder(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
     try:
         order = Order.objects.get(id=pk)
@@ -485,6 +507,7 @@ def updateOrder(request, pk):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin', 'customer'])
 def invoice(request):
     if request.user.is_staff:
         invoices = Invoice.objects.select_related('customer').prefetch_related('orders')
@@ -495,6 +518,7 @@ def invoice(request):
 
 
 @login_required(login_url='login')
+@allowed_users(allowed_roles=['admin', 'customer'])
 def invoiceDetails(request, pk):
     try:
         invoice = Invoice.objects.get(id=pk)
