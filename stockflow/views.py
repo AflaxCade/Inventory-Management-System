@@ -10,7 +10,7 @@ from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 import uuid
-
+from django.db.models import Count, Q
 # Create your views here.
 
 @unauthenticated_user
@@ -66,16 +66,24 @@ def home(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['customer'])
 def userPage(request):
-    orders = request.user.customer.order_set.all()
-    invoices = Invoice.objects.filter(customer=request.user.customer).count()
-    pending_orders = orders.filter(status='Pending').count()
-    shipped_orders = orders.filter(status='Shipped').count()
-    delivered_orders = orders.filter(status='Delivered').count()
-    context = {'orders': orders,
-               'invoices': invoices,
-               'pending_orders': pending_orders,
-               'shipped_orders': shipped_orders,
-               'delivered_orders': delivered_orders,}
+    customer = request.user.customer
+    orders = customer.order_set.select_related('product', 'customer').all()
+
+    order_counts = orders.aggregate(
+        pending_orders=Count('id', filter=Q(status='Pending')),
+        shipped_orders=Count('id', filter=Q(status='Shipped')),
+        delivered_orders=Count('id', filter=Q(status='Delivered')),
+    )
+
+    invoices = Invoice.objects.filter(customer=customer).count()
+
+    context = {
+        'orders': orders,
+        'invoices': invoices,
+        'pending_orders': order_counts['pending_orders'],
+        'shipped_orders': order_counts['shipped_orders'],
+        'delivered_orders': order_counts['delivered_orders'],
+    }
     return render(request, 'user_page.html', context)
 
 
