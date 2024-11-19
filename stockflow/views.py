@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
+from django.db.models import Count, Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,7 +11,6 @@ from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 import uuid
-from django.db.models import Count, Q
 # Create your views here.
 
 @unauthenticated_user
@@ -181,17 +181,19 @@ def customerOrders(request, pk):
     except Customer.DoesNotExist:
         messages.error(request, 'Customer does not exist.')
         return redirect('customer')
-    orders = customer.order_set.all()
+    orders = customer.order_set.select_related('product', 'customer').all()
     invoices = Invoice.objects.filter(customer=customer).count()
-    pending_orders = orders.filter(status='Pending').count()
-    shipped_orders = orders.filter(status='Shipped').count()
-    delivered_orders = orders.filter(status='Delivered').count()
+    order_counts = orders.aggregate(
+        pending_orders=Count('id', filter=Q(status='Pending')),
+        shipped_orders=Count('id', filter=Q(status='Shipped')),
+        delivered_orders=Count('id', filter=Q(status='Delivered')),
+    )
     context = {'customer': customer,
-               'orders': orders,
-               'invoices': invoices,
-               'pending_orders': pending_orders,
-               'shipped_orders': shipped_orders,
-               'delivered_orders': delivered_orders,}
+                'orders': orders,
+                'invoices': invoices,
+                'pending_orders': order_counts['pending_orders'],
+                'shipped_orders': order_counts['shipped_orders'],
+                'delivered_orders': order_counts['delivered_orders'],}
     return render(request, 'customer_orders.html', context)
 
 
