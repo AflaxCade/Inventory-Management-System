@@ -58,7 +58,7 @@ def logoutUser(request):
 @login_required(login_url='login')
 @admin_only
 def home(request):
-    orders = Order.objects.all().order_by('-id')[:10]
+    orders = Order.objects.select_related('product', 'customer').order_by('-id')[:10]
     context = {'orders': orders}
     return render(request, 'dashboard.html', context)
 
