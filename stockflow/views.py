@@ -373,7 +373,7 @@ def deleteProduct(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def order(request):
-    orders = Order.objects.all()
+    orders = Order.objects.select_related('customer', 'product').all()
     form = OrderForm()
     context = {'orders': orders, 'form': form}
     return render(request, 'order.html', context)
@@ -479,7 +479,7 @@ def singleOrder(request):
 @allowed_users(allowed_roles=['admin'])
 def updateOrder(request, pk):
     try:
-        order = Order.objects.get(id=pk)
+        order = Order.objects.select_related('customer', 'product').get(id=pk)
     except Order.DoesNotExist:
         messages.error(request, 'Order does not exist.')
         return redirect('order')
