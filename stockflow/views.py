@@ -314,7 +314,7 @@ def deleteCategory(request, pk):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['admin'])
 def product(request):
-    products = Product.objects.all()
+    products = Product.objects.select_related('category', 'supplier').all()
     form = ProductForm()
     context = {'products': products, 'form': form}
     return render(request, 'product.html', context)
@@ -338,7 +338,7 @@ def createProduct(request):
 @allowed_users(allowed_roles=['admin'])
 def updateProduct(request, pk):
     try:
-        product = Product.objects.get(id=pk)
+        product = Product.objects.select_related('category', 'supplier').get(id=pk)
     except Product.DoesNotExist:
         messages.error(request, 'Product does not exist.')
         return redirect('product')
