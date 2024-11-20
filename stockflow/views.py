@@ -531,7 +531,7 @@ def invoice(request):
 @allowed_users(allowed_roles=['admin', 'customer'])
 def invoiceDetails(request, pk):
     try:
-        invoice = Invoice.objects.get(id=pk)
+        invoice = Invoice.objects.prefetch_related('orders__product', 'orders__customer').select_related('customer').get(id=pk)
 
         # Restrict access for non-staff users to only their own invoices
         if not request.user.is_staff and invoice.customer != request.user.customer:
