@@ -19,27 +19,39 @@
                     <div class="row align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-uppercase mb-1">Earnings (Monthly)</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {% if monthly_earnings == None %}
+                                    $0.00
+                                {% else %}
+                                    ${{monthly_earnings|floatformat:2}}
+                                {% endif %}
+                            </div>
                             <div class="mt-2 mb-0 text-muted text-xs">
                                 <span class="text-success mr-2"><i class="fa fa-arrow-up"></i> 3.48%</span>
                                 <span>Since last month</span>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-calendar fa-2x text-primary"></i>
+                            <i class="fas fa-money-bill-alt fa-2x text-primary"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Earnings (Annual) Card Example -->
+        <!-- Sales (Annual) Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
                             <div class="text-xs font-weight-bold text-uppercase mb-1">Sales</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">650</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {% if annual_sales == None %}
+                                    $0.00
+                                {% else %}
+                                    ${{annual_sales}}
+                                {% endif %}
+                            </div>
                             <div class="mt-2 mb-0 text-muted text-xs">
                                 <span class="text-success mr-2"><i class="fas fa-arrow-up"></i> 12%</span>
                                 <span>Since last years</span>
@@ -52,17 +64,23 @@
                 </div>
             </div>
         </div>
-        <!-- New User Card Example -->
+        <!-- Total Custmoers Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">New User</div>
-                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">366</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Customers</div>
+                            <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">
+                                {% if customers_count == None %}
+                                    0
+                                {% else %}
+                                {{customers_count}}
+                                {% endif %}
+                            </div>
                             <div class="mt-2 mb-0 text-muted text-xs">
                                 <span class="text-success mr-2"><i class="fas fa-arrow-up"></i> 20.4%</span>
-                                <span>Since last month</span>
+                                <span>All the Customers</span>
                             </div>
                         </div>
                         <div class="col-auto">
@@ -72,21 +90,27 @@
                 </div>
             </div>
         </div>
-        <!-- Pending Requests Card Example -->
+        <!-- Pending Orders Card Example -->
         <div class="col-xl-3 col-md-6 mb-4">
             <div class="card h-100">
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Requests</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+                            <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Orders</div>
+                            <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                {% if pending_orders == None %}
+                                    0
+                                {% else %}
+                                {{pending_orders}}
+                                {% endif %}
+                            </div>
                             <div class="mt-2 mb-0 text-muted text-xs">
                                 <span class="text-danger mr-2"><i class="fas fa-arrow-down"></i> 1.10%</span>
-                                <span>Since yesterday</span>
+                                <span>From All Orders</span>
                             </div>
                         </div>
                         <div class="col-auto">
-                            <i class="fas fa-comments fa-2x text-warning"></i>
+                            <i class="fas fa-shipping-fast fa-2x text-warning"></i>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.forms import inlineformset_factory
 from django.shortcuts import render, redirect
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Sum
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -10,6 +10,7 @@ from .forms import CreateUserForm, CustomerForm, SupplierForm, CategoryForm, Pro
 from .models import Customer, Supplier, Category, Product, Order, Invoice
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
+from datetime import datetime
 import uuid
 # Create your views here.
 
@@ -59,7 +60,15 @@ def logoutUser(request):
 @admin_only
 def home(request):
     orders = Order.objects.select_related('product', 'customer').order_by('-id')[:10]
-    context = {'orders': orders}
+    monthly_earnings = Invoice.objects.filter(created_at__month=datetime.now().month).aggregate(total=Sum('total_amount'))['total']
+    annual_sales = Order.objects.filter(date_created__year=datetime.now().year).count()
+    customers_count = Customer.objects.all().count()
+    pending_orders = Order.objects.filter(status='Pending').count()
+    context = {'orders': orders,
+                'monthly_earnings': monthly_earnings,
+                'annual_sales': annual_sales,
+                'customers_count': customers_count,
+                'pending_orders': pending_orders}
     return render(request, 'dashboard.html', context)
 
 
@@ -388,7 +397,7 @@ def multipleOrders(request, pk):
         messages.error(request, 'Customer does not exist.')
         return redirect('customer')
 
-    OrderFormSet = inlineformset_factory(Customer, Order, form=MultipleOrderForm, extra=10)
+    OrderFormSet = inlineformset_factory(Customer, Order, form=MultipleOrderForm, extra=5)
     formset = OrderFormSet(queryset=Order.objects.none(), instance=customer)
 
     if request.method == 'POST':
