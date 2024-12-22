@@ -64,11 +64,26 @@ def home(request):
     annual_sales = Order.objects.filter(date_created__year=datetime.now().year).count()
     customers_count = Customer.objects.all().count()
     pending_orders = Order.objects.filter(status='Pending').count()
+
+ # Prepare data for the donut chart
+    order_status_data = (
+        Order.objects.values('status')
+        .annotate(count=Count('id'))
+        .order_by('-status')[:2]
+    )
+    
+    # Format the data for Chart.js
+    chart_labels = [entry['status'] for entry in order_status_data]
+    chart_data = [entry['count'] for entry in order_status_data]
+
     context = {'orders': orders,
                 'monthly_earnings': monthly_earnings,
                 'annual_sales': annual_sales,
                 'customers_count': customers_count,
-                'pending_orders': pending_orders}
+                'pending_orders': pending_orders,
+                'chart_labels': chart_labels,
+                'chart_data': chart_data
+        }
     return render(request, 'dashboard.html', context)
 
 

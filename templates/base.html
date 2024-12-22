@@ -57,6 +57,11 @@
   <script src="{% static 'vendor/datatables/jquery.dataTables.min.js' %}"></script>
   <script src="{% static 'vendor/datatables/dataTables.bootstrap4.min.js' %}"></script>
 
+  <script>
+    const chartLabels = {{ chart_labels|safe }};
+    const chartData = {{ chart_data|safe }};
+  </script>
+
   <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
   <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>  
   <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
