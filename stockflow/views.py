@@ -72,9 +72,23 @@ def home(request):
         .order_by('-status')[:2]
     )
     
-    # Format the data for Chart.js
+    # Format the data for donut Chart.js
     chart_labels = [entry['status'] for entry in order_status_data]
     chart_data = [entry['count'] for entry in order_status_data]
+
+  # Query to get the top 4 selling products
+    top_selling_products = (
+        Order.objects
+        .values('product__name')  # Group by product name
+        .annotate(total_sold=Sum('quantity'))  # Sum the quantities sold
+        .order_by('-total_sold')[:4]  # Order by total sold in descending order, take top 5
+    )
+
+    # Format the data for the chart
+    bar_labels = [entry['product__name'] for entry in top_selling_products]  # ['Laptop', 'Phone', ...]
+    bar_data = [entry['total_sold'] for entry in top_selling_products]  # [120, 85, ...]
+
+
 
     context = {'orders': orders,
                 'monthly_earnings': monthly_earnings,
@@ -82,7 +96,9 @@ def home(request):
                 'customers_count': customers_count,
                 'pending_orders': pending_orders,
                 'chart_labels': chart_labels,
-                'chart_data': chart_data
+                'chart_data': chart_data,
+                'bar_labels': bar_labels,
+                'bar_data': bar_data
         }
     return render(request, 'dashboard.html', context)
 

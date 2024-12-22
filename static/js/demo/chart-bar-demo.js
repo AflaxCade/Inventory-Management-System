@@ -2,43 +2,18 @@
 Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
 Chart.defaults.global.defaultFontColor = '#858796';
 
-function number_format(number, decimals, dec_point, thousands_sep) {
-  // *     example: number_format(1234.56, 2, ',', ' ');
-  // *     return: '1 234,56'
-  number = (number + '').replace(',', '').replace(' ', '');
-  var n = !isFinite(+number) ? 0 : +number,
-    prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-    sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-    dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-    s = '',
-    toFixedFix = function(n, prec) {
-      var k = Math.pow(10, prec);
-      return '' + Math.round(n * k) / k;
-    };
-  // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-  s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-  if (s[0].length > 3) {
-    s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-  }
-  if ((s[1] || '').length < prec) {
-    s[1] = s[1] || '';
-    s[1] += new Array(prec - s[1].length + 1).join('0');
-  }
-  return s.join(dec);
-}
-
 // Bar Chart Example
 var ctx = document.getElementById("myBarChart");
 var myBarChart = new Chart(ctx, {
   type: 'bar',
   data: {
-    labels: ["January", "February", "March", "April", "May", "June"],
+    labels: barLabels, // Use product names as labels
     datasets: [{
-      label: "Revenue",
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
-      borderColor: "#4e73df",
-      data: [4215, 5312, 6251, 7841, 9821, 14984],
+      label: "Total Sold",
+      backgroundColor: "#4e73df", // Primary color for the bars
+      hoverBackgroundColor: "#2e59d9", // Hover color for the bars
+      borderColor: "#4e73df", // Border color
+      data: barData, // Use total quantities sold as data
     }],
   },
   options: {
@@ -54,30 +29,30 @@ var myBarChart = new Chart(ctx, {
     scales: {
       xAxes: [{
         time: {
-          unit: 'month'
+          unit: 'product' // Unit as 'product' for product names
         },
         gridLines: {
           display: false,
           drawBorder: false
         },
         ticks: {
-          maxTicksLimit: 6
+          maxTicksLimit: 5 // Limit to top 5 products
         },
-        maxBarThickness: 25,
+        maxBarThickness: 25, // Maximum bar thickness
       }],
       yAxes: [{
         ticks: {
           min: 0,
-          max: 15000,
+          max: Math.max(...barData), // Dynamically adjust the Y-axis max value + 10
           maxTicksLimit: 5,
           padding: 10,
-          // Include a dollar sign in the ticks
+          // Add "units" to Y-axis labels
           callback: function(value, index, values) {
-            return '$' + number_format(value);
+            return value + ' units'; // Display as "X units"
           }
         },
         gridLines: {
-          color: "rgb(234, 236, 244)",
+          color: "rgb(234, 236, 244)", // Grid line color
           zeroLineColor: "rgb(234, 236, 244)",
           drawBorder: false,
           borderDash: [2],
@@ -86,14 +61,14 @@ var myBarChart = new Chart(ctx, {
       }],
     },
     legend: {
-      display: false
+      display: false // Hide legend
     },
     tooltips: {
       titleMarginBottom: 10,
       titleFontColor: '#6e707e',
       titleFontSize: 14,
-      backgroundColor: "rgb(255,255,255)",
-      bodyFontColor: "#858796",
+      backgroundColor: "rgb(255,255,255)", // Tooltip background
+      bodyFontColor: "#858796", // Tooltip text color
       borderColor: '#dddfeb',
       borderWidth: 1,
       xPadding: 15,
@@ -103,7 +78,7 @@ var myBarChart = new Chart(ctx, {
       callbacks: {
         label: function(tooltipItem, chart) {
           var datasetLabel = chart.datasets[tooltipItem.datasetIndex].label || '';
-          return datasetLabel + ': $' + number_format(tooltipItem.yLabel);
+          return datasetLabel + ': ' + tooltipItem.yLabel + ' units'; // Tooltip format
         }
       }
     },

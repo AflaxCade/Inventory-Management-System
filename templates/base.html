@@ -60,10 +60,11 @@
   <script>
     const chartLabels = {{ chart_labels|safe }};
     const chartData = {{ chart_data|safe }};
+    const barLabels = {{ bar_labels|safe }};
+    const barData = {{ bar_data|safe }};
   </script>
 
-  <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script>
-  <script src="{% static 'js/demo/chart-area-demo.js' %}"></script>  
+  <script src="{% static 'vendor/chart.js/Chart.min.js' %}"></script> 
   <script src="{% static 'js/demo/chart-pie-demo.js' %}"></script>
   <script src="{% static 'js/demo/chart-bar-demo.js' %}"></script>
 
