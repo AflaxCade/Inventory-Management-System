@@ -73,8 +73,8 @@ def home(request):
     )
     
     # Format the data for donut Chart.js
-    chart_labels = [entry['status'] for entry in order_status_data]
-    chart_data = [entry['count'] for entry in order_status_data]
+    chart_labels = [entry['status'] for entry in order_status_data] # ['Pending', 'Shipped', ...]
+    chart_data = [entry['count'] for entry in order_status_data] # [10, 5, ...]
 
   # Query to get the top 4 selling products
     top_selling_products = (
@@ -85,9 +85,8 @@ def home(request):
     )
 
     # Format the data for the chart
-    bar_labels = [entry['product__name'] for entry in top_selling_products]  # ['Laptop', 'Phone', ...]
-    bar_data = [entry['total_sold'] for entry in top_selling_products]  # [120, 85, ...]
-
+    bar_labels = [entry['product__name'] for entry in top_selling_products] or ['No Sales'] # ['Laptop', 'Phone', ...]
+    bar_data = [entry['total_sold'] for entry in top_selling_products] or [0] # [120, 85, ...]
 
 
     context = {'orders': orders,
