@@ -41,6 +41,53 @@ The dashboard displays key performance indicators (KPIs) and visualizations:
   - Create and manage orders with multiple products.
 - **Invoice Management:** Generate and manage invoices for orders.
 
----
-
 ## Installation
+
+### Prerequisites
+- Python 3.13+
+- Django 5.1+
+
+### Steps
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/AflaxCade/Inventory-Management.git
+   ```
+   
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd Inventory-Management
+   ```
+
+3. **Create a virtual environment**:
+
+```bash
+python -m venv env
+```
+
+4. **Activate the virtual environmen**t:
+
+- For Windows:
+
+```bash
+env\Scripts\activate
+```
+
+- For macOS and Linux:
+
+```bash
+source env/bin/activate
+```
+
+5. **Install the required dependencies**:
+
+```bash
+pip install -r requirements.txt
+```
+
+6. **Run the development server**:
+
+```bash
+python manage.py runserver
+```
