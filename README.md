@@ -91,3 +91,22 @@ pip install -r requirements.txt
 ```bash
 python manage.py runserver
 ```
+
+## Note
+A `.env` file must be created in the project root directory with the following configuration:
+
+```env
+DEBUG=True
+SECRET_KEY=6UHgE9N_jAna4tKAnH_AvkuB9PZ28c0XtC5x8D3Gj6qJS9SIZ3Xc4XybWQLJyfNDuxw
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=smtp.gmail.com
+EMAIL_HOST_USER=Youremail@gmail.com
+EMAIL_HOST_PASSWORD=XXXXXXXXXXX
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+
+# GoogleOAuth2
+OAUTH2_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+OAUTH2_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+```
+
