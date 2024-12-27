@@ -6,6 +6,7 @@ An Inventory Management application built using Django. This application provide
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Note](#note)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -92,6 +93,13 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
+# Usage
+- **Sign up or log in:** Use either username/email and password or Gmail for authentication.
+- **Navigate the dashboard:** View KPIs, charts, and recent orders.
+- **Manage records:** Use the management modules to add/update customers, suppliers, categories, products, and orders.
+- **Generate invoices:** The invoice is automatically Created for completed orders.
+- **Reset password:** Use the forgot password feature if needed.
+
 ## Note
 A `.env` file must be created in the project root directory with the following configuration:
 
@@ -109,3 +117,11 @@ EMAIL_USE_TLS=True
 OAUTH2_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 OAUTH2_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
+
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request for any changes or additions.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
