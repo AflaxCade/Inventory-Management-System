@@ -118,6 +118,38 @@ OAUTH2_KEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 OAUTH2_SECRET=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 ```
 
+If you want to test Google social authentication in the development environment:
+
+1. Create an API key in your Google Developer Console. Open [https://console.cloud.google.com/projectcreate](https://console.cloud.google.com/projectcreate).
+
+2. Locate the hosts file of your machine:
+   - For Linux or macOS: `/etc/hosts`
+   - For Windows: `C:\Windows\System32\Drivers\etc\hosts`
+
+3. Edit the hosts file and add the following line:
+
+   ```plaintext
+   127.0.0.1 mysite.com
+   ```
+This will tell your computer to point the mysite.com hostname to your own machine.
+
+4. Save the hosts file after making changes.
+
+5. Verify the hostname association
+
+  - Run the development server using the following command:
+    ```bash
+    python manage.py runserver
+    ```
+  - Open `http://mysite.com:8000` in your browser.
+
+6. After you verify stop the server and Run the development server through HTTPS
+  ```bash
+   python manage.py runserver_plus --cert-file cert.crt
+  ```
+
+  - Open `[https://mysite.com:8000](https://mysite.com:8000/login/)` in your browser.
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any changes or additions.
