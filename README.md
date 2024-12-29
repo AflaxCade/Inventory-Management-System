@@ -150,7 +150,7 @@ This will tell your computer to point the mysite.com hostname to your own machin
 
   - Open `https://mysite.com:8000/login` in your browser.
 
-7. To test the live website for full experience go Open [https://aflax.tech](https://aflax.tech).
+7. To test the live website for full experience go Open [https://www.aflax.tech](https://www.aflax.tech).
 
   - login as staff username `admin` and password `staff123`
   - To login as customer create new account or login with gmail account.
