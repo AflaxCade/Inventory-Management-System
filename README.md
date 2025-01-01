@@ -1,6 +1,6 @@
 # Inventory Management System
 
-An Inventory Management application built using Django. This application provides user authentication, dashboard analytics, and robust management features for customers, suppliers, categories, products, and orders. It also supports invoice generation and data visualization.
+An Inventory Management application built using Django. This application provides user authentication, dashboard analytics, and robust management features for customers, suppliers, categories, products, and orders. It also supports invoice generation and data visualization. Additionally, it includes a customer portal where customers can view their order histories and invoices.
 
 ## Table of Contents
 - [Features](#features)
